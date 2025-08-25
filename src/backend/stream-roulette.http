@@ -1,0 +1,6 @@
+@stream_roulette_HostAddress = http://localhost:5129
+
+GET {{stream_roulette_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

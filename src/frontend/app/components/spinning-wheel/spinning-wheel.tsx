@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { capitalize } from '../../utils/capitalize';
 import confetti from 'canvas-confetti';
-import type { WheelParticipant } from '../../models/SpinningWheel.models';
+import type { WheelParticipant } from '../../models/spinning-wheel.models';
 
 interface Props {
   participants: WheelParticipant[];
@@ -203,7 +203,7 @@ export const SpinningWheel: React.FC<Props> = ({ participants }) => {
   };
 
   return (
-    <div>
+    <div className=''>
       <canvas
         ref={canvasRef}
         width={400}

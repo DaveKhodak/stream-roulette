@@ -10,7 +10,7 @@ using stream_roulette.Persistence.Repositories;
 namespace stream_roulette.Services.Donations;
 
 public class DonationsBackgroundService(
-    IDonationsRepository donationsRepository,
+    IServiceProvider services,
     IOptions<StreamElementsOptions> streamElementsOptions,
     ILogger<DonationsBackgroundService> logger) : IHostedService, IDisposable
 {
@@ -42,7 +42,14 @@ public class DonationsBackgroundService(
             var responseEvent = JsonSerializer.Deserialize<StreamEvent>(data, options);
             if (responseEvent is not null && responseEvent.Type == "tip")
             {
-                await donationsRepository.AddAsync(DonationMapper.Map(responseEvent));
+                using (var scope = services.CreateScope())
+                {
+                    var donationsRepository =
+                        scope.ServiceProvider
+                            .GetRequiredService<IDonationsRepository>();
+
+                    await donationsRepository.AddAsync(DonationMapper.Map(responseEvent));
+                }
             }
         });
 

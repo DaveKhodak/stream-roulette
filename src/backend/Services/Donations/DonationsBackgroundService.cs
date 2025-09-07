@@ -1,6 +1,7 @@
 
 using System.Text.Json;
 using H.Socket.IO;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
 using stream_roulette.Configuration;
 using stream_roulette.Mappers;
@@ -10,6 +11,7 @@ using stream_roulette.Persistence.Repositories;
 namespace stream_roulette.Services.Donations;
 
 public class DonationsBackgroundService(
+    IHubContext<DonationNotificationHub> hubContext,
     IServiceProvider services,
     IOptions<StreamElementsOptions> streamElementsOptions,
     ILogger<DonationsBackgroundService> logger) : IHostedService, IDisposable
@@ -50,6 +52,7 @@ public class DonationsBackgroundService(
 
                     await donationsRepository.AddAsync(DonationMapper.Map(responseEvent));
                 }
+                await hubContext.Clients.All.SendAsync("DonationCretead");
             }
         });
 

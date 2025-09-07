@@ -2,10 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { capitalize } from '../../utils/capitalize';
 import confetti from 'canvas-confetti';
 import type { WheelParticipant } from '../../models/spinning-wheel.models';
-
-interface Props {
-  participants: WheelParticipant[];
-}
+import * as signalR from '@microsoft/signalr';
+import { getParticipants } from '~/services/spinning-wheel.service';
 
 const colors = [
   '#CC4629', // Darker vibrant orange
@@ -33,12 +31,13 @@ const colors = [
   '#CC294F', // Darker hot pink
 ];
 
-export const SpinningWheel: React.FC<Props> = ({ participants }) => {
+export const SpinningWheel = () => {
   const [spinning, setSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [spinDirection, setSpinDirection] = useState<'clockwise' | 'counterclockwise'>('clockwise');
   const [showPopup, setShowPopup] = useState(false);
   const [popupWinner, setPopupWinner] = useState<string | null>(null);
+  const [participants, setParticipants] = useState<WheelParticipant[]>([]);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const numSectors = participants.length;
@@ -48,6 +47,21 @@ export const SpinningWheel: React.FC<Props> = ({ participants }) => {
       drawWheel();
     }
   }, [participants, rotation]);
+
+  useEffect(() => {
+    getParticipants().then(response => setParticipants(response.data));
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl(`${import.meta.env.VITE_API_URL}/donationHub`)
+      .build();
+
+    connection.start()
+      .then(() => console.log('Connection started'))
+      .catch(err => console.log('Error while starting connection: ' + err));
+
+    connection.on('ParticipantAdded', (newParticipant: WheelParticipant) => {
+      setParticipants(oldParticipants => [...oldParticipants, newParticipant]);
+    });
+  }, [])
 
   const darkenColor = (color: string, amount: number): string => {
     let r = parseInt(color.slice(1, 3), 16);
@@ -172,11 +186,9 @@ export const SpinningWheel: React.FC<Props> = ({ participants }) => {
     let currentAngle = 0;
     let winningSector = 0;
 
-    for (let i = 0; i < participants.length; i++)
-    {
+    for (let i = 0; i < participants.length; i++) {
       currentAngle += 360 * participants[i].value / sumOfValues;
-      if (normalizedRotation <= currentAngle)
-      {
+      if (normalizedRotation <= currentAngle) {
         winningSector = i;
         break;
       }

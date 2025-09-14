@@ -11,8 +11,10 @@ public static class InfraDI
 {
     public static void Configure(IServiceCollection services, IConfiguration configuration)
     {
+        var dbConnectionString = configuration.GetConnectionString("DbConnectionString");
+
         services.AddDbContext<DatabaseContext>(options =>
-            options.UseSqlite(configuration.GetConnectionString("DbConnectionString")));
+            options.UseSqlServer(dbConnectionString));
 
         services.AddScoped<IWheelParticipantRepository, WheelParticipantRepository>();
     }

@@ -23,11 +23,8 @@ jobs:
         with:
           dotnet-version: '9.x'
 
-      - name: Print current directory
-        run: Get-Location
-
       - name: Build with dotnet
-        run: dotnet build  --configuration Release
+        run: dotnet build src/backend/stream-roulette.api/stream-roulette.api.csproj --configuration Release
 
       - name: dotnet publish
         run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
@@ -67,3 +64,4 @@ jobs:
           package: .
 
           
+

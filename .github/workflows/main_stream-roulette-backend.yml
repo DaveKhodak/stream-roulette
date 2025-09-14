@@ -24,10 +24,10 @@ jobs:
           dotnet-version: '9.x'
 
       - name: Build with dotnet
-        run: dotnet build src/backend/stream-roulette.api/stream-roulette.api.csproj --configuration Release
+        run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish src/backend/stream-roulette.api/stream-roulette.api.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -51,9 +51,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_1746E806F54441DD83E0249DABF4537B }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F68133E763FC40868D6D866D94AFEEA1 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F2D242FA704C427CB8BE4D6ECD2C6ABD }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D2D0F83718FC4536B946D3CF71AB4A3D }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5CA0B2DF9FA646E38562C3661C76129F }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_79B6BE1FA2054288AF4A9B4595AF268C }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -62,7 +62,4 @@ jobs:
           app-name: 'stream-roulette-backend'
           slot-name: 'Production'
           package: .
-
           
-
-

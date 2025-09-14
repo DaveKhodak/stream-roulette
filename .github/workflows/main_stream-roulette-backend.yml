@@ -27,7 +27,7 @@ jobs:
         run: dotnet build src/backend/stream-roulette.api/stream-roulette.api.csproj --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish src/backend/stream-roulette.api/stream-roulette.api.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -64,4 +64,5 @@ jobs:
           package: .
 
           
+
 

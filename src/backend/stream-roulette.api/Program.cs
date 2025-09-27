@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.AzureAppServices;
 using stream_roulette.api.Services.Donations;
 using stream_roulette.core;
 using stream_roulette.core.Hubs;
@@ -6,6 +7,14 @@ using stream_roulette.infra;
 using stream_roulette.infra.Persistence.Database;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.AddAzureWebAppDiagnostics();
+builder.Services.Configure<AzureFileLoggerOptions>(options =>
+{
+    options.FileName = "logs-";
+    options.FileSizeLimit = 50 * 1024;
+    options.RetainedFileCountLimit = 5;
+});
 
 builder.Services.AddHostedService<DonationsBackgroundService>();
 builder.Services.AddControllers();

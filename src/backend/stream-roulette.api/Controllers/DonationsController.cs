@@ -5,13 +5,13 @@ using stream_roulette.core.Interfaces.Repositories;
 namespace stream_roulette.api.Controllers;
 
 [ApiController]
-[Route("api/wheel-participants")]
-public sealed class WheelParticipantsController(IDonationRepository donationsRepository) : ControllerBase
+[Route("api/donations")]
+public sealed class DonationsController(IDonationRepository donationsRepository) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get()
     {
         var result = await donationsRepository.GetAsync();
-        return this.Ok(result.Select(WheelParticipantResponseMapper.Map));
+        return Ok(result.Select(GetDonationsResponseMapper.Map));
     }
 }

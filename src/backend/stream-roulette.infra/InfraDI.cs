@@ -16,6 +16,6 @@ public static class InfraDI
         services.AddDbContext<DatabaseContext>(options =>
             options.UseSqlServer(dbConnectionString));
 
-        services.AddScoped<IWheelParticipantRepository, WheelParticipantRepository>();
+        services.AddScoped<IDonationRepository, DonationRepository>();
     }
 }

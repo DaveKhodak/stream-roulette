@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import Header from "./components/header/header";
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -43,6 +44,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  // Register all Community features
+  ModuleRegistry.registerModules([AllCommunityModule]);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />

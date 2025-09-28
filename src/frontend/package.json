@@ -11,6 +11,8 @@
   "dependencies": {
     "@react-router/node": "^7.7.1",
     "@react-router/serve": "^7.7.1",
+    "ag-grid-community": "^34.2.0",
+    "ag-grid-react": "^34.2.0",
     "axios": "^1.11.0",
     "canvas-confetti": "^1.9.3",
     "isbot": "^5.1.27",

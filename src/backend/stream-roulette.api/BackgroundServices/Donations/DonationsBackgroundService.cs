@@ -47,17 +47,17 @@ public class DonationsBackgroundService(
             if (responseEvent is not null && responseEvent.Type == "tip"
                 && responseEvent.Data.Message is { } message && message.Contains("Movie:"))
             {
-                var wheelParticipant = WheelParticipantMapper.Map(responseEvent);
+                var donation = DonationMapper.Map(responseEvent);
                 using (var scope = services.CreateScope())
                 {
-                    var wheelParticipantRepository =
+                    var donationRepository =
                         scope.ServiceProvider
-                            .GetRequiredService<IWheelParticipantRepository>();
+                            .GetRequiredService<IDonationRepository>();
 
-                    await wheelParticipantRepository.AddAsync(wheelParticipant);
+                    await donationRepository.AddAsync(donation);
                 }
 
-                await hubContext.Clients.All.SendAsync("ParticipantAdded", WheelParticipantResponseMapper.Map(wheelParticipant));
+                await hubContext.Clients.All.SendAsync("ParticipantAdded", GetDonationsResponseMapper.Map(donation));
             }
         });
 

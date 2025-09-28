@@ -1,11 +1,11 @@
 using stream_roulette.core.Models;
-using stream_roulette.core.Models.WheelParticipants;
+using stream_roulette.core.Models.Donations;
 
 namespace stream_roulette.core.Mappers;
 
-public static class WheelParticipantMapper
+public static class DonationMapper
 {
-    public static WheelParticipant Map(StreamEvent mappedEvent) => new()
+    public static Donation Map(StreamEvent mappedEvent) => new()
     {
         Id = mappedEvent._id,
         Username = mappedEvent.Data.Username,

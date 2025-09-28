@@ -36,6 +36,8 @@ app.UseCors(p => p.WithOrigins(builder.Configuration.GetValue<string>("Cors:WebU
     .AllowAnyHeader()
     .AllowCredentials());
 
+app.UseAuthentication();
+
 app.MapHub<DonationNotificationHub>("/donationHub");
 
 app.MapControllers();

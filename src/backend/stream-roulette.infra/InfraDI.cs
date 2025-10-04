@@ -23,7 +23,10 @@ public static class InfraDI
         var dbConnectionString = configuration.GetConnectionString("DbConnectionString");
 
         services.AddDbContext<DatabaseContext>(options =>
-            options.UseSqlServer(dbConnectionString));
+            options.UseSqlServer(dbConnectionString, options => options.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null)));
 
         services.AddScoped<IDonationRepository, DonationRepository>();
     }

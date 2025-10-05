@@ -1,7 +1,6 @@
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
 using stream_roulette.core.Interfaces.Repositories;
-using stream_roulette.core.Models;
 using stream_roulette.core.Models.Users;
 
 namespace stream_roulette.infra.Authentication;
@@ -13,12 +12,29 @@ internal sealed class AuthenticationService(
     public async Task<TokenResponse?> LoginAsync(LoginRequestData loginData)
     {
         var user = await userRepository.GetByUsernameAsync(loginData.Username);
-        if (new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, loginData.Password) ==
+        if (user is null || new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, loginData.Password) ==
             PasswordVerificationResult.Failed)
         {
             return null;
         }
 
+        return await CreateTokenResposeAsync(user);
+    }
+
+    public async Task<TokenResponse?> RefreshTokenAsync(RefreshTokenRequestData refreshData)
+    {
+        var user = await userRepository.GetByIdAsync(refreshData.UserId);
+        if (user is null || user.RefreshToken != refreshData.RefreshToken ||
+            user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+        {
+            return null;
+        }
+
+        return await CreateTokenResposeAsync(user);
+    }
+
+    private async Task<TokenResponse> CreateTokenResposeAsync(User user)
+    {
         return new()
         {
             AccessToken = jwtTokenGenerator.Generate(user),

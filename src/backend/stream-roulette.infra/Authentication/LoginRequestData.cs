@@ -1,4 +1,4 @@
-namespace stream_roulette.core.Models;
+namespace stream_roulette.infra.Authentication;
 
 public sealed record LoginRequestData
 {

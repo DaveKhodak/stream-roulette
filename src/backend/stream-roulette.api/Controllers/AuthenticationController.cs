@@ -21,4 +21,16 @@ public sealed class AuthenticationController(
 
         return this.Ok(TokenResponseDtoMapper.Map(tokenResponse));
     }
+
+    [HttpPost("token/refresh")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+    {
+        var tokenResponse = await authenticationService.RefreshTokenAsync(RefreshTokenRequestDataMapper.Map(request));
+        if (tokenResponse == null)
+        {
+            return this.BadRequest();
+        }
+
+        return this.Ok(TokenResponseDtoMapper.Map(tokenResponse));
+    }
 }

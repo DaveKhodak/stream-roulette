@@ -5,4 +5,6 @@ namespace stream_roulette.infra.Authentication;
 public interface IAuthenticationService
 {
     Task<TokenResponse?> LoginAsync(LoginRequestData loginData);
+
+    Task<TokenResponse?> RefreshTokenAsync(RefreshTokenRequestData refreshData);
 }

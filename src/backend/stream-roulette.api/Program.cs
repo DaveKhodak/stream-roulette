@@ -25,10 +25,10 @@ InfraDI.Configure(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+await using (var serviceScope = app.Services.CreateAsyncScope())
+await using (var dbContext = serviceScope.ServiceProvider.GetRequiredService<DatabaseContext>())
 {
-    var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-    db.Database.Migrate();
+    await dbContext.Database.MigrateAsync();
 }
 
 app.UseCors(p => p.WithOrigins(builder.Configuration.GetValue<string>("Cors:WebUrl")!)

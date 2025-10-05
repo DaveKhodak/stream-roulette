@@ -1,9 +1,11 @@
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using stream_roulette.core.Interfaces.Repositories;
+using stream_roulette.core.Models.Users;
 using stream_roulette.infra.Authentication;
 using stream_roulette.infra.Persistence.Database;
 using stream_roulette.infra.Persistence.Repositories;
@@ -23,12 +25,14 @@ public static class InfraDI
         var dbConnectionString = configuration.GetConnectionString("DbConnectionString");
 
         services.AddDbContext<DatabaseContext>(options =>
-            options.UseSqlServer(dbConnectionString, options => options.EnableRetryOnFailure(
+            options
+                .UseSqlServer(dbConnectionString, sqlOptions => sqlOptions.EnableRetryOnFailure(
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(30),
                     errorNumbersToAdd: null)));
 
         services.AddScoped<IDonationRepository, DonationRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
     }
 
     private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
@@ -38,6 +42,8 @@ public static class InfraDI
         {
             throw new ArgumentNullException(nameof(jwtSettings), "JwtSettings are not found.");
         }
+
+        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.Section));
         services.AddAuthentication().AddJwtBearer(options =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
@@ -51,5 +57,8 @@ public static class InfraDI
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
             };
         });
+
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
     }
 }

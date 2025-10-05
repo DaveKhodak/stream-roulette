@@ -12,6 +12,6 @@ public sealed class DonationsController(IDonationRepository donationsRepository)
     public async Task<IActionResult> Get()
     {
         var result = await donationsRepository.GetAsync();
-        return Ok(result.Select(GetDonationsResponseMapper.Map));
+        return this.Ok(result.Select(GetDonationsResponseMapper.Map));
     }
 }

@@ -61,6 +61,30 @@ namespace stream_roulette.infra.Persistence.Database.Migrations
                     b.ToTable("Donations");
                 });
 
+            modelBuilder.Entity("stream_roulette.core.Models.Users.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("stream_roulette.core.Models.WheelParticipants.WheelParticipant", b =>
                 {
                     b.Property<string>("Id")
